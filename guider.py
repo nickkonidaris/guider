@@ -136,7 +136,7 @@ def auto(params): #Run this method to begin the guider
     def getStatus(path):
         
         global _obName,_obRA, _obDec, _ra_off, _dec_off
-        print "......Status: %s" % path
+        #print "......Status: %s" % path
         fitsImage = pf.open(path)
         status = {"daytime":False, "new obj":False, "moved":False}
         try: 
@@ -157,7 +157,7 @@ def auto(params): #Run this method to begin the guider
             return status
         
 		#Is image from before sunset/after sunrise? (e.g. flats)
-        if 530 < nTime < 2030: status["daytime"] = True
+        #if 530 < nTime < 2030: status["daytime"] = True
         
 		#Are target coordinates different to current global values?
         if obRA!=_obRA or obDec!=_obDec or obName!=_obName:
@@ -330,7 +330,9 @@ def auto(params): #Run this method to begin the guider
                             _t.write("GM %s %s 10 10\n" % (dRA, dDec))
                             r = int(_t.expect(["-?\d"], 60)[2])
                             if r==0: shift_sent = True
-                            else: output("Shift not sent. Error = %i\n" % r , _handled_dir+_log)
+                            else: 
+                                if r != -3:
+                                    output("Shift not sent. Error = %i\n" % r , _handled_dir+_log)
                         except:
                             shift_sent = False
                             output("Error sending shift via telnet.", _handled_dir+_log)
@@ -391,7 +393,7 @@ def auto(params): #Run this method to begin the guider
             
         if _debug: print "....Sleeping"
 		
-        sleep(10) #Wait 10 seconds before rerunning
+        sleep(3) #Wait 3 seconds before rerunning
 
 auto(params)
            
